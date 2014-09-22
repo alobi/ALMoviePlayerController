@@ -61,7 +61,14 @@ static const NSTimeInterval fullscreenAnimationDuration = 0.3;
 }
 
 - (id)initWithFrame:(CGRect)frame {
-    if ( (self = [super init]) ) {
+    // this fixes the incompatibility between ios8 and ios7 initialization
+    if ([[[UIDevice currentDevice] systemVersion] integerValue] >= 8) {
+        self = [super initWithContentURL:nil];
+    } else {
+        self = [super init];
+    }
+    
+    if ( self ) {
         
         self.view.frame = frame;
         self.view.backgroundColor = [UIColor blackColor];
