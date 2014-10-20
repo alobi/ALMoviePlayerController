@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <MediaPlayer/MPMoviePlayerController.h>
+#import "ALButton.h"
 
 @class ALMoviePlayerController;
 
@@ -92,6 +93,17 @@ typedef enum {
  */
 @property (nonatomic, readonly, getter = isShowing) BOOL showing;
 
+/**
+ Hide the done button.
+ 
+ Default value is NO.
+ */
+@property (nonatomic, readwrite) BOOL hideDoneButton;
+
+/**
+ Done Button for Top Bar.  Default is to use done standard done button
+ */
+@property (nonatomic, strong) ALButton *doneButton;
 
 /** 
  The default initializer method. The parameter may not be nil.
