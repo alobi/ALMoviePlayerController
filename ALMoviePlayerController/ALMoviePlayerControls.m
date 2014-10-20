@@ -39,7 +39,7 @@ static const CGFloat activityIndicatorSize = 40.f;
 static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 
 @interface ALMoviePlayerControls () <ALAirplayViewDelegate, ALButtonDelegate> {
-@private
+    @private
     int windowSubviews;
 }
 
@@ -108,7 +108,7 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 - (void)setup {
     if (self.style == ALMoviePlayerControlsStyleNone)
         return;
-    
+
     //top bar
     _topBar = [[ALMoviePlayerControlsBar alloc] init];
     _topBar.color = _barColor;
@@ -645,7 +645,7 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+            
     if (self.style == ALMoviePlayerControlsStyleNone)
         return;
     
