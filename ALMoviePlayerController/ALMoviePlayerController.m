@@ -26,7 +26,7 @@
 + (CGSize)sizeInOrientation:(UIInterfaceOrientation)orientation {
     CGSize size = [UIScreen mainScreen].bounds.size;
     UIApplication *application = [UIApplication sharedApplication];
-    if (UIInterfaceOrientationIsLandscape(orientation)) {
+    if (UIInterfaceOrientationIsLandscape(orientation) && [UIDevice iOSVersion] < 8.0) {
         size = CGSizeMake(size.height, size.width);
     }
     if (!application.statusBarHidden && [UIDevice iOSVersion] < 7.0) {
@@ -51,6 +51,7 @@ static const NSTimeInterval fullscreenAnimationDuration = 0.3;
 
 # pragma mark - Construct/Destruct
 
+
 - (id)init {
     return [self initWithFrame:CGRectZero];
 }
@@ -61,7 +62,14 @@ static const NSTimeInterval fullscreenAnimationDuration = 0.3;
 }
 
 - (id)initWithFrame:(CGRect)frame {
-    if ( (self = [super init]) ) {
+    
+    if ([[[UIDevice currentDevice] systemVersion] integerValue] >= 8) {
+        self = [super initWithContentURL:nil];
+    } else {
+        self = [super init];
+    }
+    
+    if ( self ) {
         
         self.view.frame = frame;
         self.view.backgroundColor = [UIColor blackColor];
@@ -193,6 +201,7 @@ static const NSTimeInterval fullscreenAnimationDuration = 0.3;
 - (void)rotateMoviePlayerForOrientation:(UIInterfaceOrientation)orientation animated:(BOOL)animated completion:(void (^)(void))completion {
     CGFloat angle;
     CGSize windowSize = [UIApplication sizeInOrientation:orientation];
+    
     CGRect backgroundFrame;
     CGRect movieFrame;
     switch (orientation) {
@@ -202,9 +211,20 @@ static const NSTimeInterval fullscreenAnimationDuration = 0.3;
             movieFrame = CGRectMake(movieBackgroundPadding, movieBackgroundPadding, backgroundFrame.size.width - movieBackgroundPadding*2, backgroundFrame.size.height - movieBackgroundPadding*2);
             break;
         case UIInterfaceOrientationLandscapeLeft:
-            angle = - M_PI_2;
-            backgroundFrame = CGRectMake([self statusBarHeightInOrientation:orientation] - movieBackgroundPadding, -movieBackgroundPadding, windowSize.height + movieBackgroundPadding*2, windowSize.width + movieBackgroundPadding*2);
-            movieFrame = CGRectMake(movieBackgroundPadding, movieBackgroundPadding, backgroundFrame.size.height - movieBackgroundPadding*2, backgroundFrame.size.width - movieBackgroundPadding*2);
+            
+            if ([UIDevice iOSVersion] >= 8.0) {
+                
+                angle = 0;
+                backgroundFrame = CGRectMake(-movieBackgroundPadding, -movieBackgroundPadding, windowSize.width + movieBackgroundPadding*2, windowSize.height + movieBackgroundPadding*2);
+                movieFrame = CGRectMake(movieBackgroundPadding, movieBackgroundPadding, backgroundFrame.size.width - movieBackgroundPadding*2, backgroundFrame.size.height - movieBackgroundPadding*2);
+            }else {
+                
+                angle = -M_PI_2;
+                backgroundFrame = CGRectMake([self statusBarHeightInOrientation:orientation] - movieBackgroundPadding, -movieBackgroundPadding, windowSize.height + movieBackgroundPadding*2, windowSize.width + movieBackgroundPadding*2);
+                movieFrame = CGRectMake(movieBackgroundPadding, movieBackgroundPadding, backgroundFrame.size.height - movieBackgroundPadding*2, backgroundFrame.size.width - movieBackgroundPadding*2);
+            }
+            
+            
             break;
         case UIInterfaceOrientationLandscapeRight:
             angle = M_PI_2;
@@ -222,18 +242,22 @@ static const NSTimeInterval fullscreenAnimationDuration = 0.3;
     if (animated) {
         [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.movieBackgroundView.transform = CGAffineTransformMakeRotation(angle);
+            
             self.movieBackgroundView.frame = backgroundFrame;
             [self setFrame:movieFrame];
         } completion:^(BOOL finished) {
             if (completion)
                 completion();
         }];
+        
     } else {
         self.movieBackgroundView.transform = CGAffineTransformMakeRotation(angle);
+        
         self.movieBackgroundView.frame = backgroundFrame;
         [self setFrame:movieFrame];
-        if (completion)
+        if (completion) {
             completion();
+        }
     }
 }
 
