@@ -43,6 +43,7 @@
 		4FE764B518046B1800D91AF3 /* moviePause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FE764AF18046B1800D91AF3 /* moviePause@2x.png */; };
 		4FE764B618046B1800D91AF3 /* moviePlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FE764B018046B1800D91AF3 /* moviePlay.png */; };
 		4FE764B718046B1800D91AF3 /* moviePlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FE764B118046B1800D91AF3 /* moviePlay@2x.png */; };
+		B59520FB1A5D18D90071CA88 /* ALProgressSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = B59520FA1A5D18D90071CA88 /* ALProgressSlider.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +102,8 @@
 		4FE764AF18046B1800D91AF3 /* moviePause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "moviePause@2x.png"; sourceTree = "<group>"; };
 		4FE764B018046B1800D91AF3 /* moviePlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moviePlay.png; sourceTree = "<group>"; };
 		4FE764B118046B1800D91AF3 /* moviePlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "moviePlay@2x.png"; sourceTree = "<group>"; };
+		B59520F91A5D18D90071CA88 /* ALProgressSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALProgressSlider.h; sourceTree = "<group>"; };
+		B59520FA1A5D18D90071CA88 /* ALProgressSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALProgressSlider.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,6 +220,8 @@
 				4FE7649A1804605200D91AF3 /* ALAirplayView.m */,
 				4FE7649B1804605200D91AF3 /* ALButton.h */,
 				4FE7649C1804605200D91AF3 /* ALButton.m */,
+				B59520F91A5D18D90071CA88 /* ALProgressSlider.h */,
+				B59520FA1A5D18D90071CA88 /* ALProgressSlider.m */,
 				4FE764AB18046B1800D91AF3 /* Images */,
 			);
 			name = ALMoviePlayerController;
@@ -368,6 +373,7 @@
 			files = (
 				4FE764A71804606B00D91AF3 /* ViewController.m in Sources */,
 				4FE7647618045F5A00D91AF3 /* AppDelegate.m in Sources */,
+				B59520FB1A5D18D90071CA88 /* ALProgressSlider.m in Sources */,
 				4FE7647218045F5A00D91AF3 /* main.m in Sources */,
 				4FE764A21804605200D91AF3 /* ALButton.m in Sources */,
 				4FE764A11804605200D91AF3 /* ALAirplayView.m in Sources */,

@@ -12,6 +12,7 @@
 #import "ALButton.h"
 #import <tgmath.h>
 #import <QuartzCore/QuartzCore.h>
+#import "ALProgressSlider.h"
 
 @implementation UIDevice (ALSystemVersion)
 
@@ -48,13 +49,14 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 @property (nonatomic, getter = isShowing) BOOL showing;
 
 @property (nonatomic, strong) NSTimer *durationTimer;
+@property (nonatomic, strong) NSTimer *playableDurationTimer;
 
 @property (nonatomic, strong) UIView *activityBackgroundView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 
 @property (nonatomic, strong) ALMoviePlayerControlsBar *topBar;
 @property (nonatomic, strong) ALMoviePlayerControlsBar *bottomBar;
-@property (nonatomic, strong) UISlider *durationSlider;
+@property (nonatomic, strong) ALProgressSlider *durationSlider;
 @property (nonatomic, strong) ALButton *playPauseButton;
 @property (nonatomic, strong) MPVolumeView *volumeView;
 @property (nonatomic, strong) ALAirplayView *airplayView;
@@ -98,6 +100,7 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [_durationTimer invalidate];
+    [_playableDurationTimer invalidate];
     [self nilDelegates];
 }
 
@@ -119,7 +122,8 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
     _bottomBar.alpha = 0.f;
     [self addSubview:_bottomBar];
     
-    _durationSlider = [[UISlider alloc] init];
+    _durationSlider = [[ALProgressSlider alloc] init];
+    [self monitorMoviePlayableDuration];
     _durationSlider.value = 0.f;
     _durationSlider.continuous = YES;
     [_durationSlider addTarget:self action:@selector(durationSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
@@ -226,6 +230,7 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 
 - (void)resetViews {
     [self stopDurationTimer];
+    [self stopPlayableDurationTimer];
     [self nilDelegates];
     [_activityBackgroundView removeFromSuperview];
     [_activityIndicator removeFromSuperview];
@@ -304,18 +309,18 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 
 # pragma mark - UIControl/Touch Events
 
-- (void)durationSliderTouchBegan:(UISlider *)slider {
+- (void)durationSliderTouchBegan:(ALProgressSlider *)slider {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideControls:) object:nil];
     [self.moviePlayer pause];
 }
 
-- (void)durationSliderTouchEnded:(UISlider *)slider {
+- (void)durationSliderTouchEnded:(ALProgressSlider *)slider {
     [self.moviePlayer setCurrentPlaybackTime:floor(slider.value)];
     [self.moviePlayer play];
     [self performSelector:@selector(hideControls:) withObject:nil afterDelay:self.fadeDelay];
 }
 
-- (void)durationSliderValueChanged:(UISlider *)slider {
+- (void)durationSliderValueChanged:(ALProgressSlider *)slider {
     double currentTime = floor(slider.value);
     double totalTime = floor(self.moviePlayer.duration);
     [self setTimeLabelValues:currentTime totalTime:totalTime];
@@ -465,6 +470,7 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 - (void)movieFinished:(NSNotification *)note {
     self.playPauseButton.selected = YES;
     [self.durationTimer invalidate];
+    [self.playableDurationTimer invalidate];
     [self.moviePlayer setCurrentPlaybackTime:0.0];
     [self monitorMoviePlayback]; //reset values
     [self hideControls:nil];
@@ -517,6 +523,7 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 
 - (void)movieDurationAvailable:(NSNotification *)note {
     [self setDurationSliderMaxMinValues];
+    [self startPlayableDurationTimer];
 }
 
 - (void)movieContentURLDidChange:(NSNotification *)note {
@@ -529,12 +536,23 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 # pragma mark - Internal Methods
 
 - (void)startDurationTimer {
+    [self stopDurationTimer];
     self.durationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(monitorMoviePlayback) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.durationTimer forMode:NSDefaultRunLoopMode];
 }
 
 - (void)stopDurationTimer {
     [self.durationTimer invalidate];
+}
+
+- (void)startPlayableDurationTimer {
+    [self stopPlayableDurationTimer];
+    self.playableDurationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(monitorMoviePlayableDuration) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.playableDurationTimer forMode:NSDefaultRunLoopMode];
+}
+
+- (void)stopPlayableDurationTimer {
+    [self.playableDurationTimer invalidate];
 }
 
 - (void)showControls:(void(^)(void))completion {
@@ -630,6 +648,16 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
     [self setTimeLabelValues:currentTime totalTime:totalTime];
     self.durationSlider.value = ceil(currentTime);
 }
+
+- (void)monitorMoviePlayableDuration {
+    double playableDuration = floor(self.moviePlayer.playableDuration);
+    
+    if (self.moviePlayer.duration != 0)
+    {
+        [self.durationSlider setPlayableProgress:playableDuration/self.moviePlayer.duration];
+    }
+}
+
 
 - (void)layoutSubviews {
     [super layoutSubviews];
