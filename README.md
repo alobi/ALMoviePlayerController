@@ -18,7 +18,8 @@ ALMoviePlayerController is a drop-in replacement for MPMoviePlayerController tha
 * Many different customization options, or you can go with the stock Apple look
 * Portrait and landscape support
 * Universal (iPhone and iPad) support
-* iOS 5.0 - iOS 7 support
+* iOS 5.0 - iOS 9 support
+* tvOS 9.0 support
 * Lightweight, stable component with small memory footprint
 
 ## Installation
@@ -205,14 +206,13 @@ If you have any suggestions, let me know! If you find any bugs, please open a ne
 
 You can reach me anytime at the addresses below. If you use the library, feel free to give me a shoutout on Twitter to let me know how you like it. I'd love to hear your thoughts. 
 
-Github: [alobi](https://github.com/alobi) <br>
-Twitter: [@lobi4nco](https://twitter.com/lobi4nco) <br>
-Email: [anthony@lobian.co](mailto:anthony@lobian.co) 
+Github: [owlcoding](https://github.com/owlcoding) <br>
+Twitter: [@pawelmaczewski](https://twitter.com/pawelmaczewski) <br>
+Email: [pawel@owlcoding.com](mailto:pawel@owlcoding.com) 
 
 ## Credits & License
 
-ALMoviePlayerController is developed and maintained by Anthony Lobianco ([@lobi4nco](https://twitter.com/lobi4nco)). Licensed under the MIT License. Basically, I would appreciate attribution if you use it.
+ALMoviePlayerController is developed and maintained by [Pawel Maczewski](http://www.codingslut.com) (previously by Anthony Lobianco - [@lobi4nco](https://twitter.com/lobi4nco)). Licensed under the MIT License. Basically, I would appreciate attribution if you use it.
 
 Enjoy!
 
-(⌐■_■)
