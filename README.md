@@ -27,7 +27,7 @@ ALMoviePlayerController is a drop-in replacement for MPMoviePlayerController tha
 
 Installation is easy.
 
-### Cocoapods
+### CocoaPods
 
 1. Add ```pod 'ALMoviePlayerController', '~>0.3.0'``` to your Podfile
 2. ```#import <ALMoviePlayerController/ALMoviePlayerController.h>``` in your view of choice
