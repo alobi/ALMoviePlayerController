@@ -9,7 +9,6 @@
 #import "ALMoviePlayerControls.h"
 #import "ALMoviePlayerController.h"
 #import "ALAirplayView.h"
-#import "ALButton.h"
 #import <tgmath.h>
 #import <QuartzCore/QuartzCore.h>
 
@@ -89,6 +88,8 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
         _seekRate = 3.f;
         _state = ALMoviePlayerControlsStateIdle;
         
+        self.hideDoneButton = NO;
+        
         [self setup];
         [self addNotifications];
     }
@@ -103,6 +104,30 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
 
 # pragma mark - Construct/Destruct Helpers
 
+- (void) initDoneButton
+{
+    if (self.hideDoneButton)
+    {
+        return;
+    }
+    if (!self.doneButton) {
+        _fullscreenButton = [[ALButton alloc] init];
+        [_fullscreenButton setTitle:@"Done" forState:UIControlStateNormal];
+        [_fullscreenButton setTitleShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
+        _fullscreenButton.titleLabel.shadowOffset = CGSizeMake(1.f, 1.f);
+        [_fullscreenButton.titleLabel setFont:[UIFont systemFontOfSize:14.f]];
+        _fullscreenButton.delegate = self;
+        [_fullscreenButton addTarget:self action:@selector(fullscreenPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [_topBar addSubview:_fullscreenButton];
+    }else
+    {
+        _fullscreenButton = _doneButton;
+        [_topBar addSubview:_fullscreenButton];
+    }
+
+    
+
+}
 - (void)setup {
     if (self.style == ALMoviePlayerControlsStyleNone)
         return;
@@ -154,14 +179,7 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
         [_topBar addSubview:_timeElapsedLabel];
         [_topBar addSubview:_timeRemainingLabel];
         
-        _fullscreenButton = [[ALButton alloc] init];
-        [_fullscreenButton setTitle:@"Done" forState:UIControlStateNormal];
-        [_fullscreenButton setTitleShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
-        _fullscreenButton.titleLabel.shadowOffset = CGSizeMake(1.f, 1.f);
-        [_fullscreenButton.titleLabel setFont:[UIFont systemFontOfSize:14.f]];
-        _fullscreenButton.delegate = self;
-        [_fullscreenButton addTarget:self action:@selector(fullscreenPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [_topBar addSubview:_fullscreenButton];
+        [self initDoneButton];
         
         _scaleButton = [[ALButton alloc] init];
         _scaleButton.delegate = self;
@@ -302,6 +320,24 @@ static const CGFloat iPhoneScreenPortraitWidth = 320.f;
     }
 }
 
+- (void)setHideDoneButton:(BOOL)hideDoneButton
+{
+    if (_hideDoneButton != hideDoneButton) {
+        _hideDoneButton = hideDoneButton;
+        
+        [self setup];
+    }
+}
+
+- (void) setDoneButton:(ALButton *)doneButton
+{
+    if (_doneButton != doneButton) {
+        
+        _doneButton = doneButton;
+        
+        [self setup];
+    }
+}
 # pragma mark - UIControl/Touch Events
 
 - (void)durationSliderTouchBegan:(UISlider *)slider {
